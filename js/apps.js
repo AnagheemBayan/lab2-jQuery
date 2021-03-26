@@ -1,78 +1,87 @@
-'use strict';
-function AnimalGallery(title, image_url, keyword, description, horns) {
-    this.title = title;
-    this.image_url = image_url;
-    this.keyword = keyword;
-    this.description = description;
-    this.horns = horns;
+'user strict';
+
+function Images(image_url,title,description,keyword,horns){
+    this.image_url= image_url;
+    this.title= title;
+    this.description= description;
+    this.keyword= keyword;
+    this.horns= horns;
 }
-
-AnimalGallery.prototype.render = function () {
-    let animal = $('#photo-template').clone();
-    $('main').append(animal);
+Images.prototype.render = function(){
+    let photoSection =$('#photo-template').clone();
+    $('main').append(photoSection);
+    photoSection.find('h2').text(this.title);
+    photoSection.find('img').attr('src',this.image_url);
+    photoSection.find('p').text(this.description);
     $('select').append(`<option value='${this.keyword}'>${this.keyword}</option>`);
-    animal.find('h2').text(this.title);
-    animal.find('img').attr('src', this.image_url);
-    animal.find('img').attr('alt', this.description);
-    animal.find('p').text(this.description);
-    animal.removeAttr('id');
-};
+    
+   
+  
+    photoSection.removeAttr('id');
 
-AnimalGallery.prototype.renderSelected = function () {
-    let animal = $('#photo-template').clone();
-    $('main').append(animal);
+}
+Images.prototype.selected = function () {
+    let photoSection =$('#photo-template').clone();
+    $('main').append(photoSection);
+    photoSection.find('h2').text(this.title);
+    photoSection.find('img').attr('src',this.image_url);
+    photoSection.find('p').text(this.description);
     $('select').append(`<option value='${this.keyword}'>${this.keyword}</option>`);
-    animal.find('h2').text(this.title);
-    animal.find('img').attr('src', this.image_url);
-    animal.find('img').attr('alt', this.description);
-    animal.find('p').text(this.description);
-    animal.removeAttr('id');
+    
+    
+    photoSection.removeAttr('id');
+   
 };
-
-
-
 $('select').change(function () {
-    let keys = $('select option:selected').val();
-    if (keys === 'default') {
-       
+    let keyWords = $('select option:selected').val();
+    if (keyWords === 'default') {
+        
         $('section').attr('id','photo-template');
-        getAnimalData();
+        getImagesData();
     } else {
+        
        
-      
         $('section').attr('id','photo-template');
-        getAnimalDataByKey(keys);
+        geteveryThingDataByKey(keyWords);
+        
     }
 });
-function getAnimalDataByKey(key) {
+
+function geteveryThingDataByKey(key) {
 
     const ajaxSetting = {
         method: 'get',
         dataType: 'json'
     };
     $.ajax('data/page-1.json', ajaxSetting).then(data => {
-        let animalObj;
+        let ObjeverThing;
         data.forEach(item => {
             if(item.keyword===key){
-                animalObj = new AnimalGallery(item.title, item.image_url, item.keyword, item.description, item.horns);
-                // console.log(animalObj);
-                animalObj.renderSelected();
+                ObjeverThing = new Images( item.image_url,item.title,item.description, item.keyword,item.horns);
+                
+                ObjeverThing .selected();
             }
 
         });
     });
 }
-function getAnimalData() {
-    const ajaxSetting = {
+
+
+function getImagesData(){
+    const ajaxSettings = {
         method: 'get',
         dataType: 'json'
-    };
-    $.ajax('data/page-1.json', ajaxSetting).then(data => {
-        data.forEach(item => {
-            let animalObj = new AnimalGallery(item.title, item.image_url, item.keyword, item.description, item.horns);
-            animalObj.render();
-        });
-    });
+    }
+    console.log("json")
+    
+    $.ajax('data/page-1.json', ajaxSettings).then(data=> {
+        
+        data.forEach(element=> {
+            let imgObj = new Images(element.image_url,element.title,element.description,element.keyword,element.horns);
+            imgObj.render();
+            
+        })
+})
 }
 
-$('document').ready(getAnimalData);
+$('document').ready(getImagesData);
